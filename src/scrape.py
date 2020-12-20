@@ -16,13 +16,13 @@ import chromedriver_autoinstaller
 
 class BaseGambling:
     def __init__(self, data_path, headless=True):
-        self.data_dir = data_path
+        self.data_dir = os.path.join(os.path.abspath('..'), data_path)
         self.driver = self.create_driver(headless=headless)
 
     def create_driver(self, headless=True):
         driver = chromedriver_autoinstaller.install(cwd=True)
         chrome_options = webdriver.ChromeOptions()     
-        prefs = {'download.default_directory' : os.path.join(os.path.abspath('.'), self.data_dir)}
+        prefs = {'download.default_directory' : self.data_dir}
         chrome_options.add_experimental_option('prefs', prefs)
         if headless:
             chrome_options.add_argument("--headless")
@@ -46,14 +46,9 @@ class BaseGambling:
     def get_data_files(self):
         files = os.listdir(self.data_dir)
         return [file for file in files if not file.startswith('.')]
-    
 
-class VideoGambling(BaseGambling):
+    def download_files(self, driver, start_date=None, end_date=None, vg=True):
     
-
-    def scrape(self, start_date=None, end_date=None):
-        
-        
         if start_date:
             start_date = pd.to_datetime(start_date)
         else:
@@ -66,18 +61,13 @@ class VideoGambling(BaseGambling):
             
         else:
             end_date = pd.to_datetime(f'{self.current_month()} {self.current_year()}')
-                                          
-
-        driver = self.driver
-        driver.get('https://www.igb.illinois.gov/VideoReports.aspx')
-
-
-
-        radio_element = driver.find_element_by_id('ctl00_MainPlaceHolder_TypeEst')
-        radio_element.click()
-        select = Select(driver.find_element_by_id('ctl00_MainPlaceHolder_SearchEstablishment'))
-        options = select.options
-        options[0].click()
+                                        
+        if vg:
+            radio_element = driver.find_element_by_id('ctl00_MainPlaceHolder_TypeEst')
+            radio_element.click()
+            select = Select(driver.find_element_by_id('ctl00_MainPlaceHolder_SearchEstablishment'))
+            options = select.options
+            options[0].click()
 
 
         start_year = Select(driver.find_element_by_id('ctl00_MainPlaceHolder_SearchStartYear'))
@@ -88,7 +78,8 @@ class VideoGambling(BaseGambling):
         file_count = len(self.get_data_files())
         for idx in range(len(years)):
             year = years[idx]
-            if not int(year) > start_date.year:
+         
+            if not int(year) >= start_date.year:
                 continue
                 
             start_years = Select(driver.find_element_by_id('ctl00_MainPlaceHolder_SearchStartYear')).options
@@ -106,12 +97,13 @@ class VideoGambling(BaseGambling):
                     
                 if date > end_date:
                     break
-                    
+                
                 start_months = Select(driver.find_element_by_id('ctl00_MainPlaceHolder_SearchStartMonth')).options
                 end_months = Select(driver.find_element_by_id('ctl00_MainPlaceHolder_SearchEndMonth')).options
                 start_month = [option for option in start_months if option.text == month][0].click()
                 end_month = [option for option in end_months if option.text == month][0].click()
                 file_type = driver.find_element_by_id('ctl00_MainPlaceHolder_ViewCSV')
+                
                 file_type.click()
                 submit = driver.find_element_by_id('ctl00_MainPlaceHolder_ButtonSearch')
                 submit.click()
@@ -130,45 +122,36 @@ class VideoGambling(BaseGambling):
                         edit_file['date'] =  f'{month}-{year}'
                         edit_file.to_csv(new_path)
                         file_count +=1
-                
 
-            else:
-                continue
-            break
+
+class VideoGambling(BaseGambling):
+
+        def scrape(self, start_date=None, end_date=None):
+            driver = self.driver
+            driver.get('https://www.igb.illinois.gov/VideoReports.aspx')
+            self.download_files(driver, start_date=start_date, end_date=end_date)
+            self.merge_files(start_date, end_date)
         
-        files = self.get_data_files()
-        frames = [pd.read_csv(os.path.join(self.data_dir, file)) for file in files]
-        df = pd.concat(frames)
-        columns = ['Establishment', 'License Number', 'Municipality',
-        'VGT Count', 'Amount Played', 'Amount Won', 'Net Wager', 'Funds In',
-        'Funds Out', 'Net Terminal Income', 'NTI Tax', 'State Share',
-        'Municipality Share', 'date']
-        df = df[columns]
+        
+        def merge_files(self, start_date, end_date):
+            
+            files = self.get_data_files()
+            frames = [pd.read_csv(os.path.join(self.data_dir, file)) for file in files]
+            df = pd.concat(frames)
+            columns = ['Establishment', 'License Number', 'Municipality',
+            'VGT Count', 'Amount Played', 'Amount Won', 'Net Wager', 'Funds In',
+            'Funds Out', 'Net Terminal Income', 'NTI Tax', 'State Share',
+            'Municipality Share', 'date']
+            df = df[columns]
 
-        for file in files:
-            os.remove(os.path.join(self.data_dir, file))
-        date_range = f'{start_date.strftime("%x")}_{end_date.strftime("%x")}'.replace('/', '-')
-        df.to_csv(os.path.join(self.data_dir, f'vg_gambling_{date_range}.csv'), index=False)
-        print('Complete!')
+            for file in files:
+                os.remove(os.path.join(self.data_dir, file))
+            date_range = f'{start_date.strftime("%x")}_{end_date.strftime("%x")}'.replace('/', '-')
+            df.to_csv(os.path.join(self.data_dir, f'vg_gambling_{date_range}.csv'), index=False)
+            print('Complete!')
       
     
-class CasinoGambling(BaseGambling):
-    
-    def __init__(self, data_path, headless=True):
-        self.data_dir = data_path
-        self.driver = self.create_driver(headless=headless)
-
-    def create_driver(self, headless=True):
-        driver = chromedriver_autoinstaller.install(cwd=True)
-        chrome_options = webdriver.ChromeOptions()     
-        prefs = {'download.default_directory' : os.path.join(os.path.abspath('.'), self.data_dir)}
-        chrome_options.add_experimental_option('prefs', prefs)
-        if headless:
-            chrome_options.add_argument("--headless")
-
-        driver = webdriver.Chrome(driver, 
-                                 chrome_options = chrome_options)
-        return driver
+class CasinoGambling(VideoGambling):
     
     def get_months(self, start_date, end_date):
         end_date = pd.to_datetime(end_date)
@@ -176,8 +159,46 @@ class CasinoGambling(BaseGambling):
         date_range = pd.date_range(start_date, one_month_up, freq='M')
         months = [date.strftime('%B') + ' ' + date.strftime('%Y') for date in date_range]
         return months
-    
+
+
     def scrape(self, start_date=None, end_date=None):
+        driver = self.driver
+        driver.get('https://www.igb.illinois.gov/CasinoReports.aspx')
+
+        # ================================================================================
+        # Download the files from the web form
+        self.download_files(driver, start_date='07-01-2020', end_date=end_date, vg=False)
+        # ================================================================================
+        # Format files to match tables that will be parsed from pdfs
+        files = self.get_data_files()
+        file_paths = [os.path.join(self.data_dir, file) for file in files]
+        needed_columns = ['Casino', 'Total AGR', 'Square Feet', 'Admissions', 'State Share', 'Local Share']
+        rename_columns = lambda df: df.rename({'Total AGR': 'agr', 'Square Feet': 'casino_square_feet'}, axis=1)
+        def reformat_columns(df):
+            df.columns = [column.lower().strip().replace(' ', '_') for column in df.columns]
+            return df
+        frames = [pd.read_csv(path) for path in file_paths]
+        frames = [rename_columns(df) for df in frames]
+        frames = [reformat_columns(df) for df in frames]
+        columns = ['casino','agr','casino_square_feet','admissions','state_share','local_share', 'date']
+        try:
+            frames = [df[columns] for df in frames]
+        except:
+            print(frames[0].columns)
+            return
+        for idx in range(len(file_paths)):
+            path = file_paths[idx]
+            frame = frames[idx]
+            frame.to_csv(path, index=False)
+        # ================================================================================
+        # Download and parse the archived pdfs
+        self.download_pdfs(start_date=start_date, end_date=end_date)
+        # ================================================================================
+        # Merge datafiles
+        self.merge_files()
+        
+    
+    def download_pdfs(self, start_date=None, end_date=None):
         '''- Download Illinois Gaming Board Casino reports  within a given time frame
              into a designated directory
            - Translate the pdf file into a pandas dataframe
@@ -260,26 +281,21 @@ class CasinoGambling(BaseGambling):
             numeric = ['agr',
                      'casino_square_feet',
                      'admissions',
-                     'agr_per_square_foot',
-                     'agr_per_admission',
                      'state_share',
                      'local_share']
             for column in numeric:
                 df[column] = df[column].apply(self.clean_string)
                 df[column] = df[column].astype(float)
+            # drop aggregate columns
+            df.drop(['agr_per_square_foot',
+                     'agr_per_admission',], axis = 1, inplace=True)
             # Save the cleaned data to the date specific csv file name!
             df.to_csv(new_path, index=False)
             # Add the name of the csv file to list of files
             files.append(csv_name)
             # Add one to the count of files in the data directory
             file_count += 1
-        # Once all files have been downloaded and cleaned
-        # They are all imported and merged.
-        # The individual tables are deleted
-        # and a single csv file is saved to disk
-        # containing all the tables!
-        self.merge_files()
-        print('Complete!')
+
             
             
             

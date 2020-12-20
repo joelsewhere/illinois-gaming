@@ -151,7 +151,7 @@ class VideoGambling(BaseGambling):
             print('Complete!')
       
     
-class CasinoGambling(VideoGambling):
+class CasinoGambling(BaseGambling):
     
     def get_months(self, start_date, end_date):
         end_date = pd.to_datetime(end_date)

@@ -1,10 +1,10 @@
 import os
 import datetime
 import pandas as pd
+import selenium
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.ui import Select
 from time import sleep
-from selenium import webdriver
 import chromedriver_autoinstaller
 
 

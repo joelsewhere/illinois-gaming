@@ -80,7 +80,9 @@ The source code for data collection can be found [here](src/)
 
 ## Final Model Interpretation
 
-This model finds that on average a 1 standard deviation increase in the number of video gambling terminals will result in a 5% decline in casino revenue. If we consider the standard deviation and mean across communities, this totals to a ≈\$380,172 decline in casino revenue for each video gambling terminal. Checking the assumptions for multi level models, was found to be non trivial, and largly unsupported by statsmodels diagnostics. Customized/revised modeling tools were developed for this project in order to assess the assumptions of linear regression, see [Modeling.py](src/Modeling.py). In its current form, this model is currently violating the assumptions of homoscedasticity and linearity (p < 0.05) but presents a notable improvement on the homoscedasticity assumption based on visul inspection of residuals. 
+This model finds that on average a 1 standard deviation increase in the number of video gambling terminals will result in a 5% decline in casino revenue. If we consider the standard deviation and mean across communities, this totals to a ≈\$380,172 decline in casino revenue for each video gambling terminal. 
+
+Checking the assumptions for multi level models, was found to be non trivial, and largly unsupported by the tools in the statsmodels.diagnostics modeul. Customized/revised modeling tools were developed for this project in order to assess the assumptions of linear regression, see [Modeling.py](src/Modeling.py). In its current form, this model is currently violating the assumptions of homoscedasticity and linearity (p < 0.05) but presents a notable improvement on the homoscedasticity assumption based on visul inspection of residuals. Because of these violations, it is reasonable to believe that the $380,172 number is biased. Additionally, given the significant differences in magnitidute of gambling revenue between communities, using a generalized standard deviation and mean are ill advised for this problem.
 
 
 # Counter Factual Analysis

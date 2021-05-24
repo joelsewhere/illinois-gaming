@@ -74,7 +74,7 @@ These are questions for which linear regression is well suited. But for this pro
 
 The data for this project consists of casino and video gambling monthly reports and census data that was collected for each municipality using the 5 Year American Community Survey (ACS). The monthly reports were collected with a selenium web scraper and all data was inserted into a postgresql `illinois_gambling` database. 
 
-The source code for data collection can be found [here](src/scrape.py)
+The source code for data collection can be found [here](src/)
 
 **For a full overview of the modeling process, please review the [MVP (minumum viable product) Notebook](notebooks/mvp.ipynb)**
 

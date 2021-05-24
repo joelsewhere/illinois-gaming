@@ -86,7 +86,7 @@ Checking the assumptions for multi level models, was found to be non trivial, an
 
 
 # Counter Factual Analysis
-The $380,000 number is likely inflated. Let's take the relationship contained without our terminal_count coefficient and calculate the counter factual revenue that, according to our model, a casino would have received if video gambling had not been present.
+The $380,000 number is likely inflated. Let's take the relationship contained without our terminal_count coefficient and calculate the counter factual revenue that, according to our model, a casino would have received if video gambling had not been present, and instead apply the community level  mean and standard deviation.
 
 ![](static/counter_factual.png)
 

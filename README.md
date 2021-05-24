@@ -50,7 +50,8 @@ Given the growth that has occurred for video gambling products, increased scruti
 <u><i>All table games:</i></u>
 - *15\% of AGR up to and including 25 million*
 - *20\% of AGR in excess of 25 million"*
-> -[Illinois Gaming Board(https://www.igb.illinois.gov/CasinoFAQ.aspx#:~:text=The\%20Illinois%20Gambling%20Act%20imposes,and\%20a%20tax%20on%20admissions.&text=The\%20admissions%20tax%20was%20increased,person\%20to%20%243%20a%20person.)
+
+> - [Illinois Gaming Board(https://www.igb.illinois.gov/CasinoFAQ.aspx#:~:text=The\%20Illinois%20Gambling%20Act%20imposes,and\%20a%20tax%20on%20admissions.&text=The\%20admissions%20tax%20was%20increased,person\%20to%20%243%20a%20person.)
 
 
 ![Distribution of tax rates between casinos and video gambling](static/tax_distribution.png)

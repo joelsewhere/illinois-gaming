@@ -56,6 +56,37 @@ Given the growth that has occurred for video gambling products, increased scruti
 
 ![Distribution of tax rates between casinos and video gambling](static/tax_distribution.png)
 
+Ultimately, the debate tends to go as followed:
+
+Person A: "Video gambling is cutting into casino revenue, and casino revenue is taxed at a greater rate than video gambling so video gambling is bad for my community."
+
+Person B: "Video gambling has a fixed tax rate, but casino gambling is frequently taxed at half the rate of video gambling, so video gambling is good for my community."
+
+![Large casino tax rates have been in decline well before the introduction of video gambling](static/large_casino_tax_rates_before_2012.png)
+
+While it is true that casino revenue is in decline, in the case of tax rates higher than that of video gambling, this decline has been consistent since 2003. Because the first video gambling terminals did not go live until 2012, it is not accurate to say the introduction of video gambling is the sole driver of the decline in higher tax payments from casinos.
+
+This however is neither evidence in support or against the suggestion that video gambling leads to less public funds. **So does it?** To determine this we must ask ourselves, *what is the relationship between video gambling and casino tax revenue? On average, what happens to casino tax revenue when new video gambling terminals are introduced to a community?*
+
+These are questions for which linear regression is well suited. But for this problem OLS which assumes independence across observation would ignore the inherent correlation that exists within municipalities. The mean and standard deviations of terminal counts and tax revenue in one municipality are likely to differ drastically from municipalities with higher populations. For this reason, I will use multi level linear regression which controls for intercluster correlation and allows the adding of random intercepts and slopes for relevant parameters. Ultimately this gives me the ability to account for multiple stratifications of dependence within my model.
+
+## The data
+
+The data for this project consists of casino and video gambling monthly reports and census data that was collected for each municipality using the 5 Year American Community Survey (ACS). The monthly reports were collected with a selenium web scraper and all data was inserted into a postgresql `illinois_gambling` database. 
+
+The source code for data collection can be found [here](src/scrape.py)
+
+**For a full overview of the modeling process, please review the [MVP (minumum viable product) Notebook](notebooks/mvp.ipynb)**
+
+## Final Model Interpretation
+
+This model finds that on average a 1 standard deviation increase in the number of video gambling terminals will result in a 5% decline in casino revenue. If we consider the standard deviation and mean across communities, this totals to a ≈\$380,172 decline in casino revenue for each video gambling terminal. Checking the assumptions for multi level models, was found to be non trivial, and largly unsupported by statsmodels diagnostics. Customized/revised modeling tools were developed for this project in order to assess the assumptions of linear regression, see [modeling.py](src/modeling.py). In its current form, this model is currently violating the assumptions of homoscedasticity and linearity (p < 0.05) but presents a notable improvement on the homoscedasticity assumption based on visul inspection of residuals. 
+
+
+# Counter Factual Analysis
+The $380,000 number is likely inflated. Let's take the relationship contained without our terminal_count coefficient and calculate the counter factual revenue that, according to our model, a casino would have received if video gambling had not been present.
+
+![](static/counter_factual.png)
 
 
 ### Running the code

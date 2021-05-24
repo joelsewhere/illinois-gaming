@@ -29,6 +29,34 @@ During this same time, **Illinois has also seen a near consistent decline in cas
 
 ![casino revenue decline](static/casino_decline.png)
 
+Given the growth that has occurred for video gambling products, increased scrutiny was likely inevitable, but due to the decline in Casino revenue, the differing tax rates between video and casino gambling havee been frequently debated by journalists, voters, and legislators.
+
+### Tax Breakdown
+
+**TLDR;**
+> **Casino gambling tax rates increase as revenue increases. The tax rate for video gambling is fixed.**
+
+"*Wagering Tax Effective July 1, 2020, the wagering tax is as follows:*
+
+<u><i>All gambling games, other than table games:</i></u>
+- *15% of AGR up to and including \$25 million*
+- *22.5\% of AGR in excess of 25 million but not exceeding 50 million*
+- *27.5\% of AGR in excess of 50 million but not exceeding 75 million*
+- *32.5\% of AGR in excess of 75 million but not exceeding 100 million*
+- *37.5\% of AGR in excess of 100 million but not exceeding 150 million*
+- *45\% of AGR in excess of 150 million but not exceeding 200 million*
+- *50\% of AGR in excess of 200 million
+
+<u><i>All table games:</i></u>
+- *15\% of AGR up to and including 25 million*
+- *20\% of AGR in excess of 25 million"*
+> -[Illinois Gaming Board(https://www.igb.illinois.gov/CasinoFAQ.aspx#:~:text=The\%20Illinois%20Gambling%20Act%20imposes,and\%20a%20tax%20on%20admissions.&text=The\%20admissions%20tax%20was%20increased,person\%20to%20%243%20a%20person.)
+
+
+![Distribution of tax rates between casinos and video gambling](static/tax_distribution.png)
+
+
+
 ### Running the code
 
 #### Virtual Environment
